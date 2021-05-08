@@ -2,6 +2,14 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const sem = new Schema({
+    dept: {
+        type: String,
+        required: true
+    },
+    sem: {
+        type: Number,
+        required: true
+    },
     videos: [{
         title: {
             type: String,
@@ -68,4 +76,4 @@ const sem = new Schema({
     }]
 })
 
-module.exports = Sems = mongoose.model('sems', sem)
+module.exports = Sems = mongoose.model('semesters', sem)

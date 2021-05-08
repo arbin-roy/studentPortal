@@ -3,6 +3,9 @@ const app = express();
 const port = process.env.PORT || 5678;
 const mongoose = require("mongoose");
 const db = require("./config/keys").mongoURI;
+const path = require("path")
+
+app.use("/uploads", express.static(path.join(__dirname, './uploads')));
 
 mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
 .then(() => {console.log("MongoDB Connected")}).catch(err => {
@@ -14,6 +17,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/student', require("./routes/student"));
+app.use('/teacher', require("./routes/teacher"));
 
 app.use((req, res, next) => {
     return res.status(404).json({
