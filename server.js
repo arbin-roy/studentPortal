@@ -4,6 +4,8 @@ const port = process.env.PORT || 5678;
 const mongoose = require("mongoose");
 const db = require("./config/keys").mongoURI;
 const path = require("path")
+const passport = require("passport")
+const bodyparser = require("body-parser")
 
 app.use("/uploads", express.static(path.join(__dirname, './uploads')));
 
@@ -11,6 +13,9 @@ mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true, useFindAn
 .then(() => {console.log("MongoDB Connected")}).catch(err => {
     console.log(err)
 })
+
+passport.initialize()
+require("./config/passport-teacher")(passport)
 
 app.get('/', (req, res) => {
     res.send("Hey there!")

@@ -10,37 +10,6 @@ const sem = new Schema({
         type: Number,
         required: true
     },
-    videos: [{
-        title: {
-            type: String,
-            required: true
-        },
-        link: {
-            type: String,
-            required: true
-        },
-        desc: {
-            type: String
-        },
-        teacherName: {
-            type: String,
-            required: true
-        }
-    }],
-    notes: [{
-        title: {
-            type: String,
-            required: true
-        },
-        link: {
-            type: String,
-            required: true
-        },
-        teacherName: {
-            type: String,
-            required: true
-        }
-    }],
     notices: [{
         title: {
             type: String,

@@ -1,5 +1,5 @@
 const multer = require("multer");
-module.exports = multerOptions = {
+module.exports = multerVideos = {
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, './uploads/videos/')

@@ -1,0 +1,29 @@
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
+
+const notes = new Schema({
+    sem: {
+        type: Number,
+        required: true
+    },
+    dept: {
+        type: String,
+        required: true
+    },
+    subject: {
+        type: String,
+        required: true
+    },
+    notes: [{
+        title: {
+            type: String,
+            required: true
+        },
+        link: {
+            type: String,
+            required: true
+        }
+    }]
+})
+
+module.exports = Notes = mongoose.model('notes', notes)
