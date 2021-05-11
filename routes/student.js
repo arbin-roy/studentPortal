@@ -38,6 +38,7 @@ router.post('/videos', upload.none(), (req, res, next) => {
         })
     }).catch(next)
 })
+
 router.post('/notes', upload.none(), (req, res, next) => {
     Notes.find({ sem: req.body.sem, dept: req.body.dept })
     .then(Notes => {
@@ -53,6 +54,5 @@ router.post('/notes', upload.none(), (req, res, next) => {
         })
     }).catch(next)
 })
-
 
 module.exports = router
