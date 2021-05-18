@@ -6,7 +6,8 @@ const upload = multer()
 const Video = require("../models/videos")
 const Notes= require("../models/notes")
 
-router.post('/login', upload.none(), (req, res, next) => {
+router.post('/login', (req, res, next) => {
+    
     Student.findOne({roll: req.body.roll, password: req.body.password})
     .then(stu => {
         if(!stu){
