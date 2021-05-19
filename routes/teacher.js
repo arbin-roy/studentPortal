@@ -11,6 +11,25 @@ const Sem = require("../models/semdetails")
 const Video = require("../models/videos")
 const Note = require("../models/notes")
 
+
+router.post('/login', (req, res, next) => {
+    
+    Teacher.findOne({name: req.body.roll, password: req.body.password})
+    .then(teacher => {
+        if(!teacher){
+            return res.status(404).json({
+                "success": false,
+                "errors": "No student found"
+            })
+        }
+
+        return res.status(200).json({
+            "success": true,
+            "data": teacher
+        })
+    }).catch(next)
+})
+
 router.post('/uploadVideo', uploadVideo.single('video'), (req, res, next) => {
     Video.findOne({ sem: req.body.sem, dept: req.body.dept, subject: req.body.subject })
     .then(vid => {
