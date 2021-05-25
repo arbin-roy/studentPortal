@@ -46,7 +46,7 @@ app.use((req, res, next) => {
 
 app.use((error, req, res, next) => {
     console.log(error)
-    return res.json({"success": false, "errors": error.toString()})
+    return res.status(500).json({"success": false, "errors": error.toString()})
 })
 
 app.listen(port, () => {console.log(`Server is running in port: ${port}`)});

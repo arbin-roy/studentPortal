@@ -5,33 +5,42 @@ const multer = require("multer")
 const uploadVideo = multer(multerVideo)
 const uploadNote = multer(multerNote)
 const normalize = require("normalize-path")
+const jwt = require("jsonwebtoken");
+const jwtKey = require("../config/keys").jwtkey;
 
 const Teacher = require("../models/teacher")
 const Sem = require("../models/semdetails")
 const Video = require("../models/videos")
 const Note = require("../models/notes")
+const passport = require("passport")
 
 
 router.post('/login', (req, res, next) => {
-    
     Teacher.findOne({name: req.body.roll, password: req.body.password})
     .then(teacher => {
         if(!teacher){
             return res.status(404).json({
                 "success": false,
-                "errors": "No student found"
+                "errors": "No Teacher found"
             })
         }
-
-        return res.status(200).json({
-            "success": true,
-            "data": teacher
+        const payload = {
+            name: teacher.name,
+            id: teacher.id
+        }
+        jwt.sign(payload, jwtKey, (err, token) => {
+            if (err) return next;
+            return res.status(200).json({
+                "success": true,
+                "data": teacher,
+                "token": "Bearer " + token
+            })
         })
     }).catch(next)
 })
 
-router.post('/uploadVideo', uploadVideo.single('video'), (req, res, next) => {
-    Video.findOne({ sem: req.body.sem, dept: req.body.dept, subject: req.body.subject })
+router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false}), uploadVideo.single('video'), (req, res, next) => {
+    Video.findOne({ sem: Number(req.body.sem), dept: req.user.dept, subjectCode: req.body.subjectCode })
     .then(vid => {
         if(vid){
             const video = {
@@ -40,7 +49,7 @@ router.post('/uploadVideo', uploadVideo.single('video'), (req, res, next) => {
             }
             if(req.body.desc) video.desc = req.body.desc
             vid.videos.push(video)
-            Teacher.findOne({name: req.body.name})
+            Teacher.findById(req.user.id)
             .then(teacher => {
                 teacher.uploadedVideos.push({
                     title: req.body.title,
@@ -62,11 +71,11 @@ router.post('/uploadVideo', uploadVideo.single('video'), (req, res, next) => {
             if(req.body.desc) video.desc = req.body.desc
             const newVideoDocument = {
                 sem: req.body.sem,
-                dept: req.body.dept,
-                subject: req.body.subject,
+                dept: req.user.dept,
+                subjectCode: req.body.subject,
                 videos: [video]
             }
-            Teacher.findOne({name: req.body.name})
+            Teacher.findById(req.user.id)
             .then(teacher => {
                 teacher.uploadedVideos.push({
                     title: req.body.title,

@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const video = new Schema({
-    subject: {
+    subjectCode: {
         type: String,
         required: true
     },
