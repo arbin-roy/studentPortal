@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const jwtKey = require("../config/keys").jwtkey;
 const multer = require("multer")
 const upload = multer()
+const passport = require("passport")
+
 const validateRegister = require("../validation/student/user-registration");
 const validateLogin = require("../validation/student/user-login");
 const validateUpdate = require("../validation/student/user-update");

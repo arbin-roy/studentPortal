@@ -7,6 +7,7 @@ const uploadNote = multer(multerNote)
 const normalize = require("normalize-path")
 const jwt = require("jsonwebtoken");
 const jwtKey = require("../config/keys").jwtkey;
+const passport = require("passport")
 
 const validateRegister = require("../validation/student/user-registration");
 const validateLogin = require("../validation/student/user-login");
@@ -22,7 +23,7 @@ const Result = require("../models/results")
 const Sem = require("../models/semdetails")
 const Video = require("../models/videos")
 const Note = require("../models/notes")
-const passport = require("passport")
+
 
 
 router.post('/login', (req, res, next) => {
