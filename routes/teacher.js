@@ -24,8 +24,6 @@ const Sem = require("../models/semdetails")
 const Video = require("../models/videos")
 const Note = require("../models/notes")
 
-
-
 router.post('/login', (req, res, next) => {
     Teacher.findOne({name: req.body.roll, password: req.body.password})
     .then(teacher => {
@@ -105,7 +103,7 @@ router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false
     }).catch(next)
 })
 
-router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false}), uploadNote.single('note'), (req, res, next) => {
+router.post('/uploadNote', passport.authenticate('jwt-teacher', {session: false}), uploadNote.single('note'), (req, res, next) => {
     Note.findOne({ sem: Number(req.body.sem), dept: req.user.dept, subjectCode: req.body.subjectCode })
     .then(notes => {
         if(notes){
@@ -117,7 +115,7 @@ router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false
             notes.notes.push(note)
             Teacher.findById(req.user.id)
             .then(teacher => {
-                teacher.uploadedVideos.push({
+                teacher.uploadedNotes.push({
                     title: req.body.title,
                     link: note.link
                 })
@@ -138,12 +136,12 @@ router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false
             const newNoteDoc = {
                 sem: req.body.sem,
                 dept: req.user.dept,
-                subjectCode: req.body.subject,
+                subjectCode: req.body.subjectCode,
                 notes: [note]
             }
             Teacher.findById(req.user.id)
             .then(teacher => {
-                teacher.uploadedVideos.push({
+                teacher.uploadedNotes.push({
                     title: req.body.title,
                     link: note.link
                 })
@@ -166,6 +164,7 @@ router.get("/uploadedvideos", passport.authenticate("jwt-teacher",{session:false
         "data": req.user.uploadedVideos
     })
 })
+
 router.get("/uploadednotes", passport.authenticate("jwt-teacher",{session:false}), (req,res,next)=>{
     return res.status(200).json({
         "success": true,

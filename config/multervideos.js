@@ -5,7 +5,7 @@ module.exports = multerVideos = {
             cb(null, './uploads/videos/')
         },
         filename: (req, file, cb) => {
-            cb(null, Date.now() + " " +file.originalname+'.mp4')
+            cb(null, Date.now() + " " +file.originalname)
         }
     }),
     fileFilter: (req, file, cb) => {

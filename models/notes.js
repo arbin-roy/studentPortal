@@ -10,7 +10,7 @@ const notes = new Schema({
         type: String,
         required: true
     },
-    subject: {
+    subjectCode: {
         type: String,
         required: true
     },
