@@ -60,10 +60,7 @@ router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false
             vid.videos.push(video)
             Teacher.findById(req.user.id)
             .then(teacher => {
-                teacher.uploadedVideos.push({
-                    title: req.body.title,
-                    link: video.link
-                })
+                teacher.uploadedVideos.push(video)
                 teacher.save().catch(next)
             })
             vid.save().then(_ => {
@@ -86,10 +83,7 @@ router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false
             }
             Teacher.findById(req.user.id)
             .then(teacher => {
-                teacher.uploadedVideos.push({
-                    title: req.body.title,
-                    link: video.link
-                })
+                teacher.uploadedVideos.push(video)
                 teacher.save().catch(next)
             })
             Video.insertMany(newVideoDocument)
@@ -115,10 +109,7 @@ router.post('/uploadNote', passport.authenticate('jwt-teacher', {session: false}
             notes.notes.push(note)
             Teacher.findById(req.user.id)
             .then(teacher => {
-                teacher.uploadedNotes.push({
-                    title: req.body.title,
-                    link: note.link
-                })
+                teacher.uploadedNotes.push(note)
                 teacher.save().catch(next)
             })
             notes.save().then(_ => {
@@ -141,10 +132,7 @@ router.post('/uploadNote', passport.authenticate('jwt-teacher', {session: false}
             }
             Teacher.findById(req.user.id)
             .then(teacher => {
-                teacher.uploadedNotes.push({
-                    title: req.body.title,
-                    link: note.link
-                })
+                teacher.uploadedNotes.push(note)
                 teacher.save().catch(next)
             })
             Note.insertMany(newNoteDoc)

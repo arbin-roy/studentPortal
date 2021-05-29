@@ -27,6 +27,7 @@ app.use(cors(corsOptions));
 
 passport.initialize()
 require("./config/passport-teacher")(passport)
+require("./config/passport-student")(passport)
 
 app.get('/', (req, res) => {
     res.send("Hey there!")
