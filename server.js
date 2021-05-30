@@ -7,7 +7,7 @@ const path = require("path")
 const passport = require("passport")
 const cors = require('cors')
 
-app.use("/uploads", express.static(path.join(__dirname, './uploads')));
+app.use(express.static(path.join(__dirname, './uploads')));
 
 mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
 .then(() => {console.log("MongoDB Connected")}).catch(err => {

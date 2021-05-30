@@ -6,7 +6,7 @@ const teacher = new Schema({
         type: String,
         required: true
     },
-    teacherId:{
+    /* teacherId:{
         type:String,
         required:true
     },
@@ -17,7 +17,7 @@ const teacher = new Schema({
     email:{
         type:String,
         required:true
-    },
+    }, */
     password: {
         type: String,
         required: true

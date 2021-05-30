@@ -167,6 +167,20 @@ router.get("/getsubjects", passport.authenticate("jwt-teacher",{session:false}),
     })
 })
 
+router.get("/downloadVideo", passport.authenticate("jwt-teacher",{session:false}), (req, res, next) => {
+    const path = 'uploads/videos/' + req.query.title;
+    res.download(path, (err) => {
+        if(err && err.statusCode === 404) res.json({error: 'Requested file not found'})
+    })
+})
+
+router.get("/downloadNote", passport.authenticate("jwt-teacher",{session:false}), (req, res, next) => {
+    const path = 'uploads/notes/' + req.query.name;
+    res.download(path, (err) => {
+        if(err && err.statusCode === 404) res.json({error: 'Requested file not found'})
+    })
+})
+
 //examination system starts here:
 router.post("/setQuestionPaper", passport.authenticate('jwt-teacher', {session: false}), (req, res, next) => {
     const { errors, isValid } = validateQuestion(req.body)
