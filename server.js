@@ -28,6 +28,7 @@ app.use(cors(corsOptions));
 passport.initialize()
 require("./config/passport-teacher")(passport)
 require("./config/passport-student")(passport)
+require("./config/passport-admin")(passport)
 
 app.get('/', (req, res) => {
     res.send("Hey there!")
@@ -35,6 +36,7 @@ app.get('/', (req, res) => {
 
 app.use('/student', require("./routes/student"));
 app.use('/teacher', require("./routes/teacher"));
+app.use('/admin', require("./routes/admin"));
 
 app.use((req, res, next) => {
     return res.status(404).json({

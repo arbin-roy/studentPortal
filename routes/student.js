@@ -44,10 +44,11 @@ router.post('/login', (req, res, next) => {
     }).catch(next)
 })
 
-router.post('/videos', upload.none(), (req, res, next) => {
-    Video.find({ sem: req.body.sem, dept: req.body.dept })
+router.get('/videos', passport.authenticate("jwt-student",{session:false}), (req, res, next) => {
+    Video.find({ sem: req.user.sem, dept: req.user.dept })
     .then(videos => {
         if(videos){
+            console.log(videos)
             return res.json({
                 "seccess": true,
                 "data": videos
@@ -60,9 +61,9 @@ router.post('/videos', upload.none(), (req, res, next) => {
     }).catch(next)
 })
 
-router.post('/notes', upload.none(), (req, res, next) => {
-    Notes.find({ sem: req.body.sem, dept: req.body.dept })
-    .then(Notes => {
+router.get('/notes', passport.authenticate("jwt-student",{session:false}), (req, res, next) => {
+    Notes.find({ sem: req.user.sem, dept: req.user.dept })
+    .then(notes => {
         if(notes){
             return res.json({
                 "seccess": true,
@@ -74,6 +75,20 @@ router.post('/notes', upload.none(), (req, res, next) => {
             "error": "No notes found for your department and semester"
         })
     }).catch(next)
+})
+
+router.get("/downloadVideo", passport.authenticate("jwt-student",{session:false}), (req, res, next) => {
+    const path = 'uploads/videos/' + req.query.title;
+    res.download(path, (err) => {
+        if(err && err.statusCode === 404) res.json({error: 'Requested file not found'})
+    })
+})
+
+router.get("/downloadNote", passport.authenticate("jwt-student",{session:false}), (req, res, next) => {
+    const path = 'uploads/notes/' + req.query.name;
+    res.download(path, (err) => {
+        if(err && err.statusCode === 404) res.json({error: 'Requested file not found'})
+    })
 })
 
 router.put("/update", passport.authenticate('jwt-student', {session: false}), (req, res, next) => {

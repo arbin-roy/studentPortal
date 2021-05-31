@@ -22,6 +22,9 @@ const notes = new Schema({
         link: {
             type: String,
             required: true
+        },
+        desc: {
+            type: String
         }
     }]
 })

@@ -34,6 +34,9 @@ const teacher = new Schema({
         link: {
             type: String,
             required: true
+        },
+        desc: {
+            type: String,
         }
     }],
     uploadedNotes: [{
@@ -44,6 +47,9 @@ const teacher = new Schema({
         link: {
             type: String,
             required: true
+        },
+        desc: {
+            type: String,
         }
     }],
     subjects: [{
