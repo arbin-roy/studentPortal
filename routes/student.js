@@ -1,4 +1,5 @@
 const router = require("express").Router()
+const fs = require("fs")
 const jwt = require("jsonwebtoken");
 const jwtKey = require("../config/keys").jwtkey;
 const multer = require("multer")
@@ -48,7 +49,6 @@ router.get('/videos', passport.authenticate("jwt-student",{session:false}), (req
     Video.find({ sem: req.user.sem, dept: req.user.dept })
     .then(videos => {
         if(videos){
-            console.log(videos)
             return res.json({
                 "seccess": true,
                 "data": videos
@@ -59,6 +59,39 @@ router.get('/videos', passport.authenticate("jwt-student",{session:false}), (req
             "error": "No videos found for your department and semester"
         })
     }).catch(next)
+})
+
+router.get("/stream/:title", (req, res, next) => {
+    const range = req.headers.range;
+    if(!range) return res.status(400).send("Requires range header");
+
+    const path = 'uploads/videos/' + req.params.title + '.mp4';
+    const videoSize = fs.statSync(path).size;
+
+    const CHUNK_SIZE = 10 ** 6;
+    const start = Number(range.replace(/\D/g, ""));
+    const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+    const contentLength = end - start + 1;
+    const headers = {
+        "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": contentLength,
+        "Content-Type": "video/mp4"
+    }
+
+    res.writeHead(206, headers);
+    const videoStream = fs.createReadStream(path, { start, end });
+    videoStream.pipe(res);
+
+    videoStream
+    .on('error', (err) => {
+        console.log(err)
+        return next(err)
+    })
+    .on('close', _ => {
+        videoStream.unpipe(res);
+    })
 })
 
 router.get('/notes', passport.authenticate("jwt-student",{session:false}), (req, res, next) => {

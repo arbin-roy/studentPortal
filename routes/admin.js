@@ -6,7 +6,7 @@ const passport = require("passport")
 const Admin = require("../models/admin")
 
 router.post('/login', (req, res, next) => {
-    Admin.findOne({teacherId: req.body.roll, password: req.body.password})
+    Admin.findOne({adminid: req.body.roll, password: req.body.password})
     .then(admin => {
         if(!admin){
             return res.status(404).json({

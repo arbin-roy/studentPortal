@@ -8,6 +8,14 @@ const normalize = require("normalize-path")
 const jwt = require("jsonwebtoken");
 const jwtKey = require("../config/keys").jwtkey;
 const passport = require("passport")
+const fs = require("fs")
+const cors = require("cors")
+
+var corsOptions = {
+    origin: 'http://localhost:4200',
+    optionsSuccessStatus: 200, // For legacy browser support
+    methods: "GET,PUT,POST,DELETE",
+}
 
 const validateRegister = require("../validation/student/user-registration");
 const validateLogin = require("../validation/student/user-login");
@@ -78,7 +86,7 @@ router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false
             const newVideoDocument = {
                 sem: req.body.sem,
                 dept: req.user.dept,
-                subjectCode: req.body.subject,
+                subjectCode: req.body.subjectCode,
                 videos: [video]
             }
             Teacher.findById(req.user.id)
@@ -178,6 +186,39 @@ router.get("/downloadNote", passport.authenticate("jwt-teacher",{session:false})
     const path = 'uploads/notes/' + req.query.name;
     res.download(path, (err) => {
         if(err && err.statusCode === 404) res.json({error: 'Requested file not found'})
+    })
+})
+
+router.get("/stream/:title", (req, res, next) => {
+    const range = req.headers.range;
+    if(!range) return res.status(400).send("Requires range header");
+
+    const path = 'uploads/videos/' + req.params.title + '.mp4';
+    const videoSize = fs.statSync(path).size;
+
+    const CHUNK_SIZE = 10 ** 6;
+    const start = Number(range.replace(/\D/g, ""));
+    const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+    const contentLength = end - start + 1;
+    const headers = {
+        "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": contentLength,
+        "Content-Type": "video/mp4"
+    }
+
+    res.writeHead(206, headers);
+    const videoStream = fs.createReadStream(path, { start, end });
+    videoStream.pipe(res);
+
+    videoStream
+    .on('error', (err) => {
+        console.log(err)
+        return next(err)
+    })
+    .on('close', _ => {
+        videoStream.unpipe(res);
     })
 })
 
