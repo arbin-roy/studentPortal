@@ -31,6 +31,7 @@ const Result = require("../models/results")
 const Sem = require("../models/semdetails")
 const Video = require("../models/videos")
 const Note = require("../models/notes")
+const Link = require("../models/links")
 
 router.post('/login', (req, res, next) => {
     Teacher.findOne({name: req.body.roll, password: req.body.password})
@@ -154,6 +155,53 @@ router.post('/uploadNote', passport.authenticate('jwt-teacher', {session: false}
     }).catch(next)
 })
 
+router.post('/uploadLink', passport.authenticate('jwt-teacher', {session: false}), (req, res, next) => {
+    Link.findOne({ sem: Number(req.body.semester), dept: req.user.dept, subjectCode: req.body.subject })
+    .then(links => {
+        if(links){
+            const link = {
+                link:req.body.link,
+                desc:req.body.desc
+            }
+            links.links.push(link)
+            Teacher.findById(req.user.id)
+            .then(teacher => {
+                teacher.uploadedLinks.push(link)
+                teacher.save().catch(next)
+            })
+            links.save().then(_ => {
+                res.json({
+                    "success": true,
+                    "message": " Link uploaded successfully "
+                })
+            }).catch(next)
+        }else{
+            const link = {
+                link: req.body.link,
+                desc: req.body.desc
+            }
+            const newLinkDoc = {
+                sem: req.body.semester,
+                dept: req.user.dept,
+                subjectCode: req.body.subject,
+                links: [link]
+            }
+            Teacher.findById(req.user.id)
+            .then(teacher => {
+                teacher.uploadedLinks.push(link)
+                teacher.save().catch(next)
+            })
+            Link.insertMany(newLinkDoc)
+            .then(_ => {
+                res.json({
+                    "success": true,
+                    "message": "Link uploaded successfully"
+                })
+            }).catch(next)
+        }
+    }).catch(next)
+})
+
 router.get("/uploadedvideos", passport.authenticate("jwt-teacher",{session:false}), (req,res,next)=>{
     return res.status(200).json({
         "success": true,
@@ -165,6 +213,13 @@ router.get("/uploadednotes", passport.authenticate("jwt-teacher",{session:false}
     return res.status(200).json({
         "success": true,
         "data": req.user.uploadedNotes
+    })
+})
+
+router.get("/uploadedlinks", passport.authenticate("jwt-teacher",{session:false}), (req,res,next)=>{
+    return res.status(200).json({
+        "success": true,
+        "data": req.user.uploadedLinks
     })
 })
 

@@ -4,9 +4,11 @@ const jwtKey = require("../config/keys").jwtkey;
 const passport = require("passport")
 
 const Admin = require("../models/admin")
+const Teacher = require("../models/teacher")
 
 router.post('/login', (req, res, next) => {
-    Admin.findOne({adminid: req.body.roll, password: req.body.password})
+    Admin.findOne({adminId: req.body.roll, password: req.body.password})
+
     .then(admin => {
         if(!admin){
             return res.status(404).json({
@@ -29,4 +31,34 @@ router.post('/login', (req, res, next) => {
     }).catch(next)
 })
 
-module.exports=router
+router.post('/addteacher', passport.authenticate('jwt-admin',{session:false}), (req,res,next)=>{
+    console.log(req.body)
+    Teacher.findOne({teacherId:req.body.teacherId, dept:req.body.dept})
+    .then(teacher=>{
+        if(teacher){
+            return res.status(409).json({
+                success:"false",
+                error:"Teacher already present"
+            })
+        }
+        else{
+            const newteacher = {
+                name:req.body.name,
+                teacherId:req.body.teacherId,
+                dept:req.body.dept,
+                password:req.body.password,
+                subjects:req.body.subjects
+            }
+            Teacher.insertMany(newteacher)
+            .then(()=>{res.status(200).json({
+                success:"true",
+                message:req.body.name+"added to teachers"
+            })
+          })
+            
+        }
+
+    }).catch(next)
+})
+
+module.exports = router

@@ -6,18 +6,16 @@ const teacher = new Schema({
         type: String,
         required: true
     },
-    /* teacherId:{
+    teacherId:{
         type:String,
         required:true
     },
     phone:{
-        type:Number,
-        required:true
+        type:Number
     },
     email:{
-        type:String,
-        required:true
-    }, */
+        type:String
+    },
     password: {
         type: String,
         required: true
@@ -50,6 +48,16 @@ const teacher = new Schema({
         },
         desc: {
             type: String,
+        }
+    }],
+    uploadedLinks: [{
+        link: {
+            type: String,
+            required: true
+        },
+        desc: {
+            type: String,
+            required:true
         }
     }],
     subjects: [{

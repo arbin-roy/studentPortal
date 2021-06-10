@@ -6,7 +6,7 @@ const admin = new Schema({
         type: String,
         required: true
     },
-    adminid: {
+    adminId: {
         type: String,
         required: true
     },

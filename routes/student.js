@@ -19,6 +19,7 @@ const AnswerSheet = require("../models/answerSheets")
 const Result = require("../models/results")
 const Video = require("../models/videos")
 const Notes= require("../models/notes")
+const Link = require("../models/links")
 
 router.post('/login', (req, res, next) => {
     
@@ -106,6 +107,22 @@ router.get('/notes', passport.authenticate("jwt-student",{session:false}), (req,
         return res.status(404).json({
             "success": false,
             "error": "No notes found for your department and semester"
+        })
+    }).catch(next)
+})
+
+router.get('/links', passport.authenticate("jwt-student",{session:false}), (req, res, next) => {
+    Link.find({ sem: req.user.sem, dept: req.user.dept })
+    .then(links => {
+        if(links){
+            return res.json({
+                "seccess": true,
+                "data": links
+            })
+        }
+        return res.status(404).json({
+            "success": false,
+            "error": "No links found for your department and semester"
         })
     }).catch(next)
 })
