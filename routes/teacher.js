@@ -106,6 +106,15 @@ router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false
     }).catch(next)
 })
 
+router.delete('removeVideo', passport.authenticate('jwt-teacher', {session: false}), (req, res, next) => {
+    const path = 'uploads/videos/' + req.body.title + '.mp4';
+    Teacher.findById(req.user.id)
+    .then(teacher => {
+        teacher.uploadedVideos.splice(req.body.index, 1)
+        teacher.save().catch(next)
+    })
+})
+
 router.post('/uploadNote', passport.authenticate('jwt-teacher', {session: false}), uploadNote.single('note'), (req, res, next) => {
     Note.findOne({ sem: Number(req.body.sem), dept: req.user.dept, subjectCode: req.body.subjectCode })
     .then(notes => {

@@ -7,8 +7,8 @@ const Admin = require("../models/admin")
 const Teacher = require("../models/teacher")
 
 router.post('/login', (req, res, next) => {
-    Admin.findOne({adminId: req.body.roll, password: req.body.password})
-
+    console.log(req.body.roll, req.body.password)
+    Admin.findOne({adminid: req.body.roll, password: req.body.password})
     .then(admin => {
         if(!admin){
             return res.status(404).json({
@@ -31,10 +31,9 @@ router.post('/login', (req, res, next) => {
     }).catch(next)
 })
 
-router.post('/addteacher', passport.authenticate('jwt-admin',{session:false}), (req,res,next)=>{
-    console.log(req.body)
-    Teacher.findOne({teacherId:req.body.teacherId, dept:req.body.dept})
-    .then(teacher=>{
+router.post('/addTeacher', passport.authenticate('jwt-admin',{session:false}), (req, res, next)=>{
+    Teacher.findOne({teacherId: req.body.teacherId, dept: req.body.dept})
+    .then(teacher => {
         if(teacher){
             return res.status(409).json({
                 success:"false",
@@ -43,21 +42,19 @@ router.post('/addteacher', passport.authenticate('jwt-admin',{session:false}), (
         }
         else{
             const newteacher = {
-                name:req.body.name,
-                teacherId:req.body.teacherId,
-                dept:req.body.dept,
-                password:req.body.password,
-                subjects:req.body.subjects
+                name: req.body.name,
+                teacherId: req.body.teacherId,
+                dept: req.body.dept,
+                password: req.body.password,
+                subjects: req.body.subjects
             }
             Teacher.insertMany(newteacher)
             .then(()=>{res.status(200).json({
                 success:"true",
-                message:req.body.name+"added to teachers"
+                message:req.body.name+" added to teachers"
             })
-          })
-            
-        }
-
+          })   
+        } 
     }).catch(next)
 })
 

@@ -61,11 +61,11 @@ const teacher = new Schema({
         }
     }],
     subjects: [{
-        name: {
+        subjectCode: {
             type: String,
             required: true
         },
-        code: {
+        name: {
             type: String,
             required: true
         }
