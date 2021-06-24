@@ -42,6 +42,16 @@ const sem = new Schema({
             type: String,
             required: true
         }
+    }],
+    subjects:[{
+        subjectCode:{
+            type:String,
+            required:true
+        },
+        subjectName:{
+            type:String,
+            required:true
+        }
     }]
 })
 

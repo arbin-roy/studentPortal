@@ -20,10 +20,12 @@ const teacher = new Schema({
         type: String,
         required: true
     },
-    dept: {
-        type: String,
-        required: true
-    },
+    depts: [{
+        
+            type: String,
+            required: true
+       
+    }],
     uploadedVideos: [{
         title: {
             type: String,
@@ -65,7 +67,7 @@ const teacher = new Schema({
             type: String,
             required: true
         },
-        name: {
+        subjectName: {
             type: String,
             required: true
         }
