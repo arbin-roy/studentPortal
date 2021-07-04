@@ -86,7 +86,7 @@ router.post('/uploadVideo', passport.authenticate('jwt-teacher', {session: false
             if(req.body.desc) video.desc = req.body.desc
             const newVideoDocument = {
                 sem: req.body.sem,
-                dept: req.user.dept,
+                dept: req.body.dept,
                 subjectCode: req.body.subjectCode,
                 videos: [video]
             }
@@ -144,7 +144,7 @@ router.post('/uploadNote', passport.authenticate('jwt-teacher', {session: false}
             if(req.body.desc) note.desc = req.body.desc
             const newNoteDoc = {
                 sem: req.body.sem,
-                dept: req.user.dept,
+                dept: req.body.dept,
                 subjectCode: req.body.subjectCode,
                 notes: [note]
             }
@@ -165,6 +165,7 @@ router.post('/uploadNote', passport.authenticate('jwt-teacher', {session: false}
 })
 
 router.post('/uploadLink', passport.authenticate('jwt-teacher', {session: false}), (req, res, next) => {
+    console.log(req.body)
     Link.findOne({ sem: Number(req.body.semester), dept: req.body.dept, subjectCode: req.body.subject })
     .then(links => {
         if(links){
@@ -191,7 +192,7 @@ router.post('/uploadLink', passport.authenticate('jwt-teacher', {session: false}
             }
             const newLinkDoc = {
                 sem: req.body.semester,
-                dept: req.user.dept,
+                dept: req.body.dept,
                 subjectCode: req.body.subject,
                 links: [link]
             }

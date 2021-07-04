@@ -9,7 +9,6 @@ const SemDetails = require("../models/semdetails")
 const Department = require("../models/department")
 
 router.post('/login', (req, res, next) => {
-    console.log(req.body.roll, req.body.password)
     Admin.findOne({adminId: req.body.roll, password: req.body.password})
     .then(admin => {
         if(!admin){
@@ -77,8 +76,8 @@ router.post("/addsub", passport.authenticate("jwt-admin",{session:false}), (req,
             })
             Department.find()
             .then(result=>{
-                console.log(result.dept)
-                if(!result){
+                console.log(result)
+                if(result.length==0){
                     const newdept ={
                         dept:[req.body.dept],
                         subjects:req.body.subject
@@ -87,21 +86,21 @@ router.post("/addsub", passport.authenticate("jwt-admin",{session:false}), (req,
                     Department.insertMany(newdept)
                 }
                 else{
-                    console.log(result.dept)
+                    console.log(result[0].dept)
                     var count=0
-                    for(x of result.dept){
+                    for(x of result[0].dept){
                         if(x==req.body.dept){
                             count=count+1;
                             break
                         }
                     }
                     if(count==0){
-                        result.dept.push(req.body.dept)
+                        result[0].dept.push(req.body.dept)
                     }
                     for(x of req.body.subject){
-                        result.subjects.push(x)
+                        result[0].subjects.push(x)
                     }
-                    result.save()
+                    result[0].save()
                     .then(_=>{})
                 }
             }).catch(next)
@@ -113,9 +112,16 @@ router.post("/addsub", passport.authenticate("jwt-admin",{session:false}), (req,
                 subjects:req.body.subject
             }
             SemDetails.insertMany(newdept)
+            .then(_=>{
+                res.status(200).json({
+                    "success":true,
+                    "message":"Subjects added successfully"
+                })
+
+            })
             Department.find()
             .then(result=>{
-                if(!result){
+                if(result.length==0){
                     const newdept ={
                         dept:[req.body.dept],
                         subjects:req.body.subject
@@ -124,21 +130,21 @@ router.post("/addsub", passport.authenticate("jwt-admin",{session:false}), (req,
                     Department.insertMany(newdept)
                 }
                 else{
-                    console.log(result.dept)
+                    console.log(result[0].dept)
                     var count=0
-                    for(x of result.dept){
+                    for(x of result[0].dept){
                         if(x==req.body.dept){
                             count=count+1;
                             break
                         }
                     }
                     if(count==0){
-                        result.dept.push(req.body.dept)
+                        result[0].dept.push(req.body.dept)
                     }
                     for(x of req.body.subject){
-                        result.subjects.push(x)
+                        result[0].subjects.push(x)
                     }
-                    result.save()
+                    result[0].save()
                     .then(_=>{}).catch(next)
                 }
 
