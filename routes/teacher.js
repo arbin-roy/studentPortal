@@ -9,13 +9,6 @@ const jwt = require("jsonwebtoken");
 const jwtKey = require("../config/keys").jwtkey;
 const passport = require("passport")
 const fs = require("fs")
-const cors = require("cors")
-
-var corsOptions = {
-    origin: 'http://localhost:4200',
-    optionsSuccessStatus: 200, // For legacy browser support
-    methods: "GET,PUT,POST,DELETE",
-}
 
 const validateRegister = require("../validation/student/user-registration");
 const validateLogin = require("../validation/student/user-login");
@@ -32,6 +25,7 @@ const Sem = require("../models/semdetails")
 const Video = require("../models/videos")
 const Note = require("../models/notes")
 const Link = require("../models/links")
+const Records = require("../models/record")
 
 router.post('/login', (req, res, next) => {
     Teacher.findOne({teacherId: req.body.roll, password: req.body.password})
@@ -294,6 +288,37 @@ router.get("/getdetails", passport.authenticate("jwt-teacher",{session:false}),(
         "subjects":req.user.subjects,
         "depts":req.user.depts
     })
+})
+
+router.post("/recordKeeping", passport.authenticate("jwt-teacher", {session: false}), (req, res, next) => {
+    console.log(req.body);
+    const record = {
+        teacherName: req.user.name,
+        teacherId: req.user.teacherId,
+        dept: req.body.course,
+        sem: req.body.sem,
+        subject: req.body.subject,
+        platformUsed: req.body.platform_used,
+        topicCovered: req.body.topic_covered,
+        whether_recorded: req.body.whether_recorded,
+        date_time: req.body.date_time,
+        duration: req.body.duration,
+        students_attended: req.body.students_attended,
+        total_students: req.body.total_students,
+        notes: req.body.notes,
+        assignment_given: req.body.assignment_given,
+        assignment_submitted: req.body.assignment_submitted,
+        test_conducted: req.body.test_conducted,
+        remarks: req.body.remarks
+    }
+
+    Records.insertMany(record)
+    .then(_ => {
+        return res.status(200).json({
+            "success": true,
+            "message": "Record added successfully"
+        })
+    }).catch(next)
 })
 
 //examination system starts here:

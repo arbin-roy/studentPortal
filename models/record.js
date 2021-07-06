@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const Schema = require(mongoose.Schema)
+const Schema = mongoose.Schema
 
 const records = new Schema({
     teacherName:{
@@ -18,7 +18,7 @@ const records = new Schema({
         type:Number,
         required:true
     },
-    subject:[{
+    subject:{
         subjectName:{
             type:String,
             required:true
@@ -27,7 +27,7 @@ const records = new Schema({
             type:String,
             required:true
         }
-    }],
+    },
     platformUsed:{
         type:String,
         required:true
@@ -40,20 +40,12 @@ const records = new Schema({
         type:String,
         required:true
     },
-    start: {
-        type:String,
-        required:true
-    },
-    end:{
-        type:String,
-        required:true
-    },
     date_time: {
         type:String,
         required:true
     },
     duration: {
-        type:String,
+        type: Number,
         required:true
     },
     students_attended: {
@@ -84,8 +76,9 @@ const records = new Schema({
         type:String,
         required:true
     },
-    
 })
+
+module.exports = Records = mongoose.model('records', records);
 
 /* addRecord = new FormGroup({
     sem: new FormControl(''),

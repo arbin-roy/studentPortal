@@ -9,7 +9,7 @@ const SemDetails = require("../models/semdetails")
 const Department = require("../models/department")
 
 router.post('/login', (req, res, next) => {
-    Admin.findOne({adminId: req.body.roll, password: req.body.password})
+    Admin.findOne({adminid: req.body.roll, password: req.body.password})
     .then(admin => {
         if(!admin){
             return res.status(404).json({
